@@ -1,0 +1,63 @@
+# Day 3
+
+```elixir
+test_input = """
+vJrwpWtwJgWrhcsFMMfFFhFp
+jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
+PmmdzqPrVvPwwTWBwg
+wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
+ttgJtRGJQctTZtZT
+CrZsJsPPZsGzwwsLwLmpwMDw
+"""
+
+input = File.read!("#{__DIR__}/inputs/day03.txt")
+```
+
+## Part 1
+
+```elixir
+input
+|> String.split("\n", trim: true)
+|> Enum.map(fn x ->
+  length = x |> String.to_charlist() |> length |> Kernel./(2) |> round()
+  {c1, c2} = x |> String.split_at(length)
+
+  value =
+    c1
+    |> String.to_charlist()
+    |> Enum.reduce_while(0, fn char, _ ->
+      if c2 |> String.contains?([char] |> to_string()) do
+        {:halt, char}
+      else
+        {:cont, char}
+      end
+    end)
+
+  if value >= 97, do: value - 96, else: value - 38
+end)
+|> Enum.sum()
+```
+
+## Part 2
+
+```elixir
+input
+|> String.split("\n", trim: true)
+|> Enum.chunk_every(3)
+|> Enum.map(fn [first, second, third] ->
+  value =
+    first
+    |> to_charlist()
+    |> Enum.reduce_while(0, fn char, _ ->
+      if second |> String.contains?([char] |> to_string()) &&
+           third |> String.contains?([char] |> to_string()) do
+        {:halt, char}
+      else
+        {:cont, char}
+      end
+    end)
+
+  if value >= 97, do: value - 96, else: value - 38
+end)
+|> Enum.sum()
+```

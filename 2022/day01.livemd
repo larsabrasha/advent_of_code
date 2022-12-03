@@ -1,0 +1,52 @@
+# Day 1
+
+```elixir
+test_input = """
+1000
+2000
+3000
+
+4000
+
+5000
+6000
+
+7000
+8000
+9000
+
+10000
+"""
+
+input = File.read!("#{__DIR__}/inputs/day01.txt")
+```
+
+## Part 1
+
+```elixir
+input
+|> String.split("\n\n")
+|> Enum.map(fn x ->
+  x
+  |> String.split("\n", trim: true)
+  |> Enum.map(&String.to_integer/1)
+  |> Enum.sum()
+end)
+|> Enum.max()
+```
+
+## Part 2
+
+```elixir
+input
+|> String.split("\n\n")
+|> Enum.map(fn x ->
+  x
+  |> String.split("\n")
+  |> Enum.map(&String.to_integer/1)
+  |> Enum.sum()
+end)
+|> Enum.sort(:desc)
+|> Enum.take(3)
+|> Enum.sum()
+```

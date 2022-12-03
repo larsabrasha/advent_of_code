@@ -1,0 +1,36 @@
+# Day 1
+
+```elixir
+input = File.read!("#{__DIR__}/inputs/day01.txt")
+```
+
+## Part 1
+
+```elixir
+input
+|> String.split("", trim: true)
+|> Enum.map(fn x ->
+  case x do
+    "(" -> 1
+    ")" -> -1
+  end
+end)
+|> Enum.sum()
+```
+
+## Part 2
+
+```elixir
+input
+|> String.split("", trim: true)
+|> Enum.map(fn x ->
+  case x do
+    "(" -> 1
+    ")" -> -1
+  end
+end)
+|> Enum.with_index()
+|> Enum.reduce_while(0, fn {value, index}, acc ->
+  if value + acc == -1, do: {:halt, index}, else: {:cont, value + acc}
+end)
+```
