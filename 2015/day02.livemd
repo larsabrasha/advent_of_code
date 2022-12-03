@@ -1,0 +1,39 @@
+# Day 2
+
+```elixir
+input = File.read!("#{__DIR__}/inputs/day02.txt")
+```
+
+## Part 1
+
+```elixir
+input
+|> String.split("\n", trim: true)
+|> Enum.map(fn x ->
+  x
+  |> String.split("x")
+  |> Enum.map(&String.to_integer/1)
+  |> Enum.sort()
+end)
+|> Enum.map(fn [a, b, c] ->
+  2 * a * b + 2 * a * c + 2 * b * c + a * b
+end)
+|> Enum.sum()
+```
+
+## Part 2
+
+```elixir
+input
+|> String.split("\n", trim: true)
+|> Enum.map(fn x ->
+  x
+  |> String.split("x")
+  |> Enum.map(&String.to_integer/1)
+  |> Enum.sort()
+end)
+|> Enum.map(fn [a, b, c] ->
+  a + a + b + b + a * b * c
+end)
+|> Enum.sum()
+```
