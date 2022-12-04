@@ -1,0 +1,47 @@
+# Day 4
+
+```elixir
+input = File.read!("#{__DIR__}/inputs/day04.txt")
+```
+
+## Part 1
+
+```elixir
+input
+|> String.split("\n", trim: true)
+|> Enum.map(fn x ->
+  [a, b, c, d] =
+    x
+    |> String.split([",", "-"])
+    |> Enum.map(&String.to_integer/1)
+
+  if (a >= c && a <= d && b >= c && b <= d) ||
+       (c >= a && c <= b && d >= a && d <= b) do
+    1
+  else
+    0
+  end
+end)
+|> Enum.sum()
+```
+
+## Part 2
+
+```elixir
+input
+|> String.split("\n", trim: true)
+|> Enum.map(fn x ->
+  [a, b, c, d] =
+    x
+    |> String.split([",", "-"])
+    |> Enum.map(&String.to_integer/1)
+
+  if (a >= c && a <= d) || (b >= c && b <= d) ||
+       ((c >= a && c <= b) || (d >= a && d <= b)) do
+    1
+  else
+    0
+  end
+end)
+|> Enum.sum()
+```
