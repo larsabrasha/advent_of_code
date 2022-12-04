@@ -1,0 +1,44 @@
+# 2018 - Day 1
+
+```elixir
+input = File.read!("#{__DIR__}/inputs/day01.txt")
+
+input2 = """
++1
+-1
+"""
+```
+
+## Part 1
+
+```elixir
+input
+|> String.split("\n", trim: true)
+|> Enum.map(&String.replace(&1, "+", ""))
+|> Enum.map(fn x -> String.to_integer(x) end)
+|> Enum.sum()
+```
+
+## Part 2
+
+```elixir
+defmodule Day01 do
+  def calibrate(all_changes, prev_freq, reached_freqs) do
+    [head | tail] = all_changes
+    freq = prev_freq + head
+
+    if freq in reached_freqs do
+      freq
+    else
+      shifted = [head | tail |> Enum.reverse()] |> Enum.reverse()
+      calibrate(shifted, freq, [freq | reached_freqs])
+    end
+  end
+end
+
+input
+|> String.split("\n", trim: true)
+|> Enum.map(&String.replace(&1, "+", ""))
+|> Enum.map(fn x -> String.to_integer(x) end)
+|> Day01.calibrate(0, [0])
+```
