@@ -1,4 +1,4 @@
-# Day 4
+# 2022 - Day 4
 
 ```elixir
 input = File.read!("#{__DIR__}/inputs/day04.txt")
@@ -16,11 +16,9 @@ input
     |> Enum.map(&String.to_integer/1)
 
   if (a >= c && a <= d && b >= c && b <= d) ||
-       (c >= a && c <= b && d >= a && d <= b) do
-    1
-  else
-    0
-  end
+       (c >= a && c <= b && d >= a && d <= b),
+     do: 1,
+     else: 0
 end)
 |> Enum.sum()
 ```
@@ -31,17 +29,9 @@ end)
 input
 |> String.split("\n", trim: true)
 |> Enum.map(fn x ->
-  [a, b, c, d] =
-    x
-    |> String.split([",", "-"])
-    |> Enum.map(&String.to_integer/1)
-
-  if (a >= c && a <= d) || (b >= c && b <= d) ||
-       ((c >= a && c <= b) || (d >= a && d <= b)) do
-    1
-  else
-    0
-  end
+  [a, b, c, d] = x |> String.split([",", "-"]) |> Enum.map(&String.to_integer/1)
+  Range.disjoint?(Range.new(a, b), Range.new(c, d))
 end)
+|> Enum.map(&if &1, do: 0, else: 1)
 |> Enum.sum()
 ```

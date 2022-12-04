@@ -1,12 +1,6 @@
-# Day 2
+# 2022 - Day 2
 
 ```elixir
-test_input = """
-A Y
-B X
-C Z
-"""
-
 input = File.read!("#{__DIR__}/inputs/day02.txt")
 ```
 

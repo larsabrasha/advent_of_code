@@ -1,15 +1,6 @@
-# Day 3
+# 2022 - Day 3
 
 ```elixir
-test_input = """
-vJrwpWtwJgWrhcsFMMfFFhFp
-jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
-PmmdzqPrVvPwwTWBwg
-wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
-ttgJtRGJQctTZtZT
-CrZsJsPPZsGzwwsLwLmpwMDw
-"""
-
 input = File.read!("#{__DIR__}/inputs/day03.txt")
 ```
 
