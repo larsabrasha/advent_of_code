@@ -1,0 +1,91 @@
+# 2022 - Day 5
+
+```elixir
+input = File.read!("#{__DIR__}/inputs/day05.txt")
+```
+
+## Part 1
+
+```elixir
+[setup, moves] = input |> String.split("\n\n", trim: true)
+
+stacks =
+  setup
+  |> String.split("\n", trim: true)
+  |> Enum.reverse()
+  |> Enum.drop(1)
+  |> Enum.map(fn x ->
+    x
+    |> to_charlist()
+    |> Enum.drop(1)
+    |> Enum.take_every(4)
+  end)
+  |> Enum.zip_with(fn x ->
+    x
+    |> Enum.reverse()
+    |> to_string()
+    |> String.trim()
+    |> String.split("", trim: true)
+  end)
+
+moves
+|> String.split("\n", trim: true)
+|> Enum.reduce(stacks, fn x, acc ->
+  [_, count, _, from, _, to] = x |> String.split(" ", trim: true)
+
+  count = String.to_integer(count)
+  fromIndex = String.to_integer(from) - 1
+  toIndex = String.to_integer(to) - 1
+
+  {move, keep} = acc |> Enum.at(fromIndex) |> Enum.split(count)
+
+  acc
+  |> List.replace_at(fromIndex, keep)
+  |> List.replace_at(toIndex, (move |> Enum.reverse()) ++ (acc |> Enum.at(toIndex)))
+end)
+|> Enum.map(fn x -> x |> Enum.at(0) end)
+|> Enum.join()
+```
+
+## Part 2
+
+```elixir
+[setup, moves] = input |> String.split("\n\n", trim: true)
+
+stacks =
+  setup
+  |> String.split("\n", trim: true)
+  |> Enum.reverse()
+  |> Enum.drop(1)
+  |> Enum.map(fn x ->
+    x
+    |> to_charlist()
+    |> Enum.drop(1)
+    |> Enum.take_every(4)
+  end)
+  |> Enum.zip_with(fn x ->
+    x
+    |> Enum.reverse()
+    |> to_string()
+    |> String.trim()
+    |> String.split("", trim: true)
+  end)
+
+moves
+|> String.split("\n", trim: true)
+|> Enum.reduce(stacks, fn x, acc ->
+  [_, count, _, from, _, to] = x |> String.split(" ", trim: true)
+
+  count = String.to_integer(count)
+  fromIndex = String.to_integer(from) - 1
+  toIndex = String.to_integer(to) - 1
+
+  {move, keep} = acc |> Enum.at(fromIndex) |> Enum.split(count)
+
+  acc
+  |> List.replace_at(fromIndex, keep)
+  |> List.replace_at(toIndex, move ++ (acc |> Enum.at(toIndex)))
+end)
+|> Enum.map(fn x -> x |> Enum.at(0) end)
+|> Enum.join()
+```
