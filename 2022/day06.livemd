@@ -1,0 +1,47 @@
+# 2022 - Day 6
+
+```elixir
+input = File.read!("#{__DIR__}/inputs/day06.txt")
+```
+
+## Part 1
+
+```elixir
+defmodule Day6Part1 do
+  def calc(text, count) do
+    if Enum.slice(text, 0, 4)
+       |> Enum.frequencies()
+       |> Map.values()
+       |> Enum.all?(&(&1 == 1)) do
+      count
+    else
+      calc(Enum.slice(text, 1..-1), count + 1)
+    end
+  end
+end
+
+input
+|> to_charlist()
+|> Day6Part1.calc(4)
+```
+
+## Part 2
+
+```elixir
+defmodule Day6Part2 do
+  def calc(text, count) do
+    if Enum.slice(text, 0, 14)
+       |> Enum.frequencies()
+       |> Map.values()
+       |> Enum.all?(&(&1 == 1)) do
+      count
+    else
+      calc(Enum.slice(text, 1..-1), count + 1)
+    end
+  end
+end
+
+input
+|> to_charlist()
+|> Day6Part2.calc(14)
+```
