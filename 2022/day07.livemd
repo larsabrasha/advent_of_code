@@ -1,0 +1,149 @@
+# 2022 - Day 7
+
+```elixir
+input = File.read!("#{__DIR__}/inputs/day07.txt")
+```
+
+## Part 1
+
+```elixir
+defmodule Day7Part1a do
+  def run([], _, dictionary) do
+    dictionary
+  end
+
+  def run([head | tail], current_dir, dictionary) do
+    items = head |> String.split(" ", trim: true)
+    {current_dir, dictionary} = Day7Part1a.handle(items, current_dir, dictionary)
+
+    run(tail, current_dir, dictionary)
+  end
+
+  def handle(["$", "cd", dir], current_dir, dictionary) do
+    abs_path = current_dir |> Path.join(dir) |> Path.expand()
+    {abs_path, dictionary}
+  end
+
+  def handle(["$", "ls"], current_dir, dictionary) do
+    {current_dir, dictionary}
+  end
+
+  def handle(["dir", dir], current_dir, dictionary) do
+    abs_path = Path.join(current_dir, dir)
+
+    {_, dictionary} =
+      dictionary
+      |> Map.get_and_update(current_dir, fn current_value ->
+        {_, c} =
+          current_value
+          |> Map.get_and_update(:children, fn children ->
+            {children, [abs_path | children]}
+          end)
+
+        {current_value, c}
+      end)
+
+    dictionary =
+      dictionary
+      |> Map.put(abs_path, %{:type => "dir", :size => 0, :children => []})
+
+    {current_dir, dictionary}
+  end
+
+  def handle([size, filename], current_dir, dictionary) do
+    abs_path = Path.join(current_dir, filename)
+
+    {_, dictionary} =
+      dictionary
+      |> Map.get_and_update(current_dir, fn current_value ->
+        {_, c} =
+          current_value
+          |> Map.get_and_update(:children, fn children ->
+            {children, [abs_path | children]}
+          end)
+
+        {current_value, c}
+      end)
+
+    dictionary =
+      dictionary
+      |> Map.put(abs_path, %{:type => "file", :size => size, :children => []})
+
+    {current_dir, dictionary}
+  end
+end
+
+defmodule Day7Part1b do
+  def size_of_child_paths([], _) do
+    0
+  end
+
+  def size_of_child_paths(child_paths, dictionary) do
+    children =
+      child_paths
+      |> Enum.map(&Map.get(dictionary, &1))
+
+    file_sizes =
+      children
+      |> Enum.filter(&(Map.get(&1, :type) == "file"))
+      |> Enum.map(&(Map.get(&1, :size) |> String.to_integer()))
+      |> Enum.sum()
+
+    child_paths =
+      children
+      |> Enum.filter(&(Map.get(&1, :type) == "dir"))
+      |> Enum.flat_map(&Map.get(&1, :children))
+
+    file_sizes + Day7Part1b.size_of_child_paths(child_paths, dictionary)
+  end
+end
+
+dictionary =
+  input
+  |> String.split("\n", trim: true)
+  |> Day7Part1a.run("/", %{"/" => %{:type => "dir", :size => 0, :children => []}})
+
+dictionary
+|> Map.filter(fn {_, value} ->
+  Map.get(value, :type) == "dir"
+end)
+|> Map.to_list()
+|> Enum.map(fn {_, content} ->
+  content
+  |> Map.get(:children)
+  |> Day7Part1b.size_of_child_paths(dictionary)
+end)
+|> Enum.filter(&(&1 < 100_000))
+|> Enum.sum()
+```
+
+## Part 2
+
+```elixir
+dictionary =
+  input
+  |> String.split("\n", trim: true)
+  |> Day7Part1a.run("/", %{"/" => %{:type => "dir", :size => 0, :children => []}})
+
+sizes =
+  dictionary
+  |> Map.filter(fn {_, value} ->
+    Map.get(value, :type) == "dir"
+  end)
+  |> Map.to_list()
+  |> Enum.map(fn {_, content} ->
+    content
+    |> Map.get(:children)
+    |> Day7Part1b.size_of_child_paths(dictionary)
+  end)
+  |> Enum.sort()
+
+used_space =
+  sizes
+  |> Enum.sort(:desc)
+  |> List.first()
+
+sizes
+|> Enum.filter(&(&1 > used_space + 30_000_000 - 70_000_000))
+|> List.first()
+```
