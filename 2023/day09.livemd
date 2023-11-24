@@ -1,0 +1,19 @@
+# 2023 - Day 9
+
+```elixir
+input = File.read!("#{__DIR__}/inputs/day09.txt")
+```
+
+## Part 1
+
+```elixir
+input
+|> String.split("\n\n")
+```
+
+## Part 2
+
+```elixir
+input
+|> String.split("\n\n")
+```
